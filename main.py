@@ -1,18 +1,5 @@
-from __future__ import absolute_import, division, print_function, unicode_literals
-
-import tensorflow as tf
-
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, Conv2D, Flatten, Dropout, MaxPooling2D
-from tensorflow.keras.preprocessing.image import ImageDataGenerator
-
 import os
 import sys
-import numpy as np
-import matplotlib.pyplot as plt
-
-IMG_HEIGHT = 200
-IMG_WIDTH = 200
 
 if len(sys.argv) != 2:
     print("Nipoprawana ilość argumentów")
@@ -38,8 +25,15 @@ females = DB + "female"
 if not os.path.exists(males): os.mkdir(males)
 if not os.path.exists(females): os.mkdir(females)
 
-for filename in os.listdir(DB):
-    if not filename.find('g1') == -1:
-        os.replace(DB + filename, males + "/" + filename)
-    else:
-        os.replace(DB + filename, females + "/" + filename)
+try:
+    for filename in os.listdir(DB):
+        if filename != "male" and filename != "female":
+            if not filename.find('g1') == -1:
+                os.replace(DB + filename, males + "/" + filename)
+            else:
+                os.replace(DB + filename, females + "/" + filename)
+except:
+    print("Ding Dong somethings wrong!")
+    print(DB)
+    print(females)
+    print(males)
