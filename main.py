@@ -13,62 +13,65 @@ import sys
 
 PATH = sys.argv[1]
 
-if not os.path.exists(PATH):
-    print("Niepoprawna ścieżka! Spróbuj ponownie")
-    exit(0)
-
-train_dir = os.path.join(PATH, "train")
-validation_dir = os.path.join(PATH, "validation")
-
-# directory with our training cat pictures
-train_male_dir = os.path.join(train_dir, 'male')
-# directory with our training dog pictures
-train_female_dir = os.path.join(train_dir, 'female')
-# directory with our validation cat pictures
-validation_male_dir = os.path.join(validation_dir, 'male')
-# directory with our validation dog pictures
-validation_female_dir = os.path.join(validation_dir, 'female')
-
-num_male_tr = len(os.listdir(train_male_dir))
-num_female_tr = len(os.listdir(train_female_dir))
-
-num_male_val = len(os.listdir(validation_male_dir))
-num_female_val = len(os.listdir(validation_female_dir))
-
-total_train = num_male_tr + num_female_tr
-total_val = num_male_val + num_female_val
-
-print('Obrazki treningowe mężczyźni:', num_male_tr)
-print('Obrazki treningowe kobiety:', num_female_tr)
-
-print('Obrazki sprawdzające mężczyźni:', num_male_val)
-print('Obrazki sprawdzające kobiety:', num_female_val)
-print("--")
-print("W sumie treningowych:", total_train)
-print("W sumie testowych:", total_val)
-
-batch_size = 128
-epochs = 15
+BATCH_SIZE = 128
+EPOCHS = 3
 IMG_HEIGHT = 150
 IMG_WIDTH = 150
+CHECKPOINT_PATH = 'training_1/cp.ckpt'
+SAVE_PATH = 'saved_model/genders'
 
-train_image_generator = ImageDataGenerator(rescale=1./255)
-validation_image_generator = ImageDataGenerator(rescale=1./255)
 
-train_data_gen = train_image_generator.flow_from_directory(batch_size=batch_size,
-                                                           directory=train_dir,
-                                                           shuffle=True,
-                                                           target_size=(
-                                                               IMG_HEIGHT, IMG_WIDTH),
-                                                           class_mode='binary')
+def load_data_from_path(path=sys.argv[1], batch_size=128, target_size=(150, 150)):
 
-val_data_gen = validation_image_generator.flow_from_directory(batch_size=batch_size,
-                                                              directory=validation_dir,
-                                                              target_size=(
-                                                                  IMG_HEIGHT, IMG_WIDTH),
-                                                              class_mode='binary')
+    if not os.path.exists(path):
+        print("Niepoprawna ścieżka! Spróbuj ponownie")
+        exit(0)
 
-sample_training_images, _ = next(train_data_gen)
+    train_dir = os.path.join(path, "train")
+    validation_dir = os.path.join(path, "validation")
+
+    # directory with our training cat pictures
+    train_male_dir = os.path.join(train_dir, 'male')
+    # directory with our training dog pictures
+    train_female_dir = os.path.join(train_dir, 'female')
+    # directory with our validation cat pictures
+    validation_male_dir = os.path.join(validation_dir, 'male')
+    # directory with our validation dog pictures
+    validation_female_dir = os.path.join(validation_dir, 'female')
+
+    num_male_tr = len(os.listdir(train_male_dir))
+    num_female_tr = len(os.listdir(train_female_dir))
+
+    num_male_val = len(os.listdir(validation_male_dir))
+    num_female_val = len(os.listdir(validation_female_dir))
+
+    total_train = num_male_tr + num_female_tr
+    total_val = num_male_val + num_female_val
+
+    print('Obrazki treningowe mężczyźni:', num_male_tr)
+    print('Obrazki treningowe kobiety:', num_female_tr)
+
+    print('Obrazki sprawdzające mężczyźni:', num_male_val)
+    print('Obrazki sprawdzające kobiety:', num_female_val)
+    print("--")
+    print("W sumie treningowych:", total_train)
+    print("W sumie testowych:", total_val)
+
+    train_image_generator = ImageDataGenerator(rescale=1./255)
+    validation_image_generator = ImageDataGenerator(rescale=1./255)
+
+    train_data_gen = train_image_generator.flow_from_directory(batch_size=batch_size,
+                                                               directory=train_dir,
+                                                               shuffle=True,
+                                                               target_size=target_size,
+                                                               class_mode='binary')
+
+    val_data_gen = validation_image_generator.flow_from_directory(batch_size=batch_size,
+                                                                  directory=validation_dir,
+                                                                  target_size=target_size,
+                                                                  class_mode='binary')
+    return train_data_gen, val_data_gen, total_train, total_val
+
 
 # This function will plot images in the form of a grid with 1 row and 5 columns where images are placed in each column.
 
@@ -83,78 +86,98 @@ def plotImages(images_arr):
     plt.show()
 
 
-# plotImages(sample_training_images[:5])
+def create_model(target_size=(150, 150)):
+    h, w = target_size
+    model = Sequential([
+        Conv2D(16, 3, padding='same', activation='relu',
+               input_shape=(h, w, 3)),
+        MaxPooling2D(),
+        Conv2D(32, 3, padding='same', activation='relu'),
+        MaxPooling2D(),
+        Conv2D(64, 3, padding='same', activation='relu'),
+        MaxPooling2D(),
+        Flatten(),
+        Dense(512, activation='relu'),
+        Dense(1)
+    ])
 
-model = Sequential([
-    Conv2D(16, 3, padding='same', activation='relu',
-           input_shape=(IMG_HEIGHT, IMG_WIDTH, 3)),
-    MaxPooling2D(),
-    Conv2D(32, 3, padding='same', activation='relu'),
-    MaxPooling2D(),
-    Conv2D(64, 3, padding='same', activation='relu'),
-    MaxPooling2D(),
-    Flatten(),
-    Dense(512, activation='relu'),
-    Dense(1)
-])
+    model.compile(optimizer='adam',
+                  loss=tf.keras.losses.BinaryCrossentropy(from_logits=True),
+                  metrics=['accuracy'])
 
-model.compile(optimizer='adam',
-              loss=tf.keras.losses.BinaryCrossentropy(from_logits=True),
-              metrics=['accuracy'])
+    model.summary()
+    return model
 
-model.summary()
 
-# Saving progress
+def load_model_from_checkpoint(model, checkpoint_path, train_data_gen):
+    latest = tf.train.latest_checkpoint(os.path.dirname(checkpoint_path))
 
-checkpoint_path = "training_1/cp.ckpt"
-checkpoint_dir = os.path.dirname(checkpoint_path)
+    if latest:
+        model.load_weights(latest)
 
-# Create a callback that saves the model's weights
-cp_callback = tf.keras.callbacks.ModelCheckpoint(filepath=checkpoint_path,
-                                                 save_weights_only=True,
-                                                 save_best_only=True,
-                                                 verbose=1)
+        print("Restoring model")
+        loss, acc = model.evaluate(train_data_gen, verbose=1)
+        print("Restored model, accuracy: {:5.2f}%".format(100*acc))
 
-# load
 
-latest = tf.train.latest_checkpoint(checkpoint_dir)
+def fit_model_from_path(path_data=PATH, epochs=EPOCHS,
+                        batch_size=BATCH_SIZE, save_path=SAVE_PATH, checkpoint_path=CHECKPOINT_PATH, target_size=(IMG_HEIGHT, IMG_WIDTH)):
 
-model.load_weights(latest)
+    train_data_gen, val_data_gen, total_train, total_val = load_data_from_path(
+        path_data, batch_size, target_size)
 
-print("Restoring model")
-loss, acc = model.evaluate(train_data_gen, verbose=1)
-print("Restored model, accuracy: {:5.2f}%".format(100*acc))
+    # sample_training_images, _ = next(train_data_gen)
+    # plotImages(sample_training_images[:5])
 
-history = model.fit(
-    train_data_gen,
-    steps_per_epoch=total_train // batch_size,
-    epochs=epochs,
-    validation_data=val_data_gen,
-    validation_steps=total_val // batch_size,
-    callbacks=[cp_callback])  # Pass callback to training
+    model = create_model(target_size)
 
-# tf.saved_model.save(model, 'saved_model/genders-3')
-model.save('saved_model/genders')
-print("Saved model")
+    load_model_from_checkpoint(model, checkpoint_path, train_data_gen)
 
-acc = history.history['accuracy']
-val_acc = history.history['val_accuracy']
+    # Create a callback that saves the model's weights
+    cp_callback = tf.keras.callbacks.ModelCheckpoint(filepath=checkpoint_path,
+                                                     save_weights_only=True,
+                                                     save_best_only=True,
+                                                     verbose=1)
 
-loss = history.history['loss']
-val_loss = history.history['val_loss']
+    history = model.fit(
+        train_data_gen,
+        steps_per_epoch=total_train // batch_size,
+        epochs=epochs,
+        validation_data=val_data_gen,
+        validation_steps=total_val // batch_size,
+        callbacks=[cp_callback])  # Pass callback to training
 
-epochs_range = range(epochs)
+    # tf.saved_model.save(model, 'saved_model/genders-3')
+    model.save(save_path)
+    print("Saved model")
+    return history
 
-plt.figure(figsize=(8, 8))
-plt.subplot(1, 2, 1)
-plt.plot(epochs_range, acc, label='Training Accuracy')
-plt.plot(epochs_range, val_acc, label='Validation Accuracy')
-plt.legend(loc='lower right')
-plt.title('Training and Validation Accuracy')
 
-plt.subplot(1, 2, 2)
-plt.plot(epochs_range, loss, label='Training Loss')
-plt.plot(epochs_range, val_loss, label='Validation Loss')
-plt.legend(loc='upper right')
-plt.title('Training and Validation Loss')
-plt.show()
+def read_history(history):
+    acc = history.history['accuracy']
+    val_acc = history.history['val_accuracy']
+
+    loss = history.history['loss']
+    val_loss = history.history['val_loss']
+
+    epochs_range = range(EPOCHS)
+
+    plt.figure(figsize=(8, 8))
+    plt.subplot(1, 2, 1)
+    plt.plot(epochs_range, acc, label='Training Accuracy')
+    plt.plot(epochs_range, val_acc, label='Validation Accuracy')
+    plt.legend(loc='lower right')
+    plt.title('Training and Validation Accuracy')
+
+    plt.subplot(1, 2, 2)
+    plt.plot(epochs_range, loss, label='Training Loss')
+    plt.plot(epochs_range, val_loss, label='Validation Loss')
+    plt.legend(loc='upper right')
+    plt.title('Training and Validation Loss')
+    plt.show()
+
+
+history = fit_model_from_path(path_data=PATH, epochs=EPOCHS,
+                              batch_size=BATCH_SIZE, save_path=SAVE_PATH, checkpoint_path=CHECKPOINT_PATH, target_size=(IMG_HEIGHT, IMG_WIDTH))
+
+read_history(history)
