@@ -2,7 +2,7 @@ import os
 import sys
 
 if len(sys.argv) != 2:
-    print("Nipoprawana ilość argumentów")
+    print("Niepoprawana ilość argumentów")
     exit(0)
 
 # TU WSTAWIC SCIEZKE DO OBRAZÓW TRENINGOWYCH
@@ -33,7 +33,7 @@ try:
             else:
                 os.replace(DB + filename, females + "/" + filename)
 except:
-    print("Ding Dong somethings wrong!")
+    print("Ding Dong something wrong!")
     print(DB)
     print(females)
     print(males)

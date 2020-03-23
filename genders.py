@@ -193,7 +193,8 @@ def use_model(path_image, path_model=SAVE_PATH):
     test_image = np.expand_dims(test_image, axis=0)
 
     model = load_model(path_model)
-    probability_model = tf.keras.Sequential([model, tf.keras.layers.Softmax()])
+    # probability_model = tf.keras.Sequential([model, tf.keras.layers.Softmax()])
 
-    prediction = probability_model.predict(test_image)
-    print(prediction)
+    # prediction = probability_model.predict(test_image)
+    prediction = model.predict(test_image)
+    return prediction
