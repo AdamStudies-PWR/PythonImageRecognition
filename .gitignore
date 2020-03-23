@@ -1,5 +1,7 @@
 #Data
 data/
+saved_model
+training_1
 
 #VS Code
 .vscode/
