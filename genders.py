@@ -4,6 +4,7 @@ import tensorflow as tf
 
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Conv2D, Flatten, Dropout, MaxPooling2D
+from tensorflow.keras.preprocessing import image
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
 import os
@@ -177,7 +178,22 @@ def read_history(history):
     plt.show()
 
 
-history = fit_model_from_path(path_data=PATH, epochs=EPOCHS,
-                              batch_size=BATCH_SIZE, save_path=SAVE_PATH, checkpoint_path=CHECKPOINT_PATH, target_size=(IMG_HEIGHT, IMG_WIDTH))
+def load_model(path_model):
+    return tf.keras.models.load_model(path_model)
 
-read_history(history)
+
+def use_model(path_image, path_model=SAVE_PATH):
+
+    image_generator = tf.keras.preprocessing.image.ImageDataGenerator(
+        rescale=1./255)
+
+    test_image = image.load_img(
+        path_image, target_size=(150, 150))
+    test_image = image.img_to_array(test_image)
+    test_image = np.expand_dims(test_image, axis=0)
+
+    model = load_model(path_model)
+    probability_model = tf.keras.Sequential([model, tf.keras.layers.Softmax()])
+
+    prediction = probability_model.predict(test_image)
+    print(prediction)
