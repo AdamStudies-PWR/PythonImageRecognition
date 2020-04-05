@@ -15,14 +15,14 @@ import sys
 PATH = sys.argv[1]
 
 BATCH_SIZE = 128
-EPOCHS = 3
-IMG_HEIGHT = 150
-IMG_WIDTH = 150
+EPOCHS = 15
+IMG_HEIGHT = 200
+IMG_WIDTH = 200
 CHECKPOINT_PATH = 'training_1/cp.ckpt'
 SAVE_PATH = 'saved_model/genders'
 
 
-def load_data_from_path(path=sys.argv[1], batch_size=128, target_size=(150, 150)):
+def load_data_from_path(path=sys.argv[1], batch_size=128, target_size=(200, 200)):
 
     if not os.path.exists(path):
         print("Niepoprawna ścieżka! Spróbuj ponownie")
@@ -87,7 +87,7 @@ def plotImages(images_arr):
     plt.show()
 
 
-def create_model(target_size=(150, 150)):
+def create_model(target_size=(200, 200)):
     h, w = target_size
     model = Sequential([
         Conv2D(16, 3, padding='same', activation='relu',
@@ -188,7 +188,7 @@ def use_model(path_image, path_model=SAVE_PATH):
         rescale=1./255)
 
     test_image = image.load_img(
-        path_image, target_size=(150, 150))
+        path_image, target_size=(200, 200))
     test_image = image.img_to_array(test_image)
     test_image = np.expand_dims(test_image, axis=0)
 
