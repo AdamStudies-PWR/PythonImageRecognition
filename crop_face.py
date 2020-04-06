@@ -30,7 +30,7 @@ def draw_faces(cropped_faces):
         pyplot.axis('off')
         # plot face
         pyplot.imshow(cropped_faces[i])
-        pyplot.show()
+    pyplot.show()
 
 
 filename = 'test1.jpg'
