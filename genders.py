@@ -16,10 +16,10 @@ PATH = sys.argv[1]
 
 BATCH_SIZE = 128
 EPOCHS = 15
-IMG_HEIGHT = 200
-IMG_WIDTH = 200
+IMG_HEIGHT = 150
+IMG_WIDTH = 150
 CHECKPOINT_PATH = 'training_1/cp.ckpt'
-SAVE_PATH = 'saved_model/genders'
+SAVE_PATH = '/home/adam/RIPO/PythonImageRecognition/saved_model/genders'
 
 
 def load_data_from_path(path=sys.argv[1], batch_size=128, target_size=(200, 200)):

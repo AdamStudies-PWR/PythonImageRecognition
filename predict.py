@@ -5,8 +5,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 
-# PATH = sys.argv[1]
-PATH = "/run/media/adam/DLinux/BackupRIPO/14g1a61.png"
+PATH = sys.argv[1]
+# PATH = "/run/media/adam/DLinux/BackupRIPO/14g1a61.png"
 
 OUTPUT = ["Chłopczyk", "Dziewczynka"]
 

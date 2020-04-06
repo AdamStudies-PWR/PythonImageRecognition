@@ -4,9 +4,9 @@ import sys
 PATH = sys.argv[1]
 
 BATCH_SIZE = 128
-EPOCHS = 3
-IMG_HEIGHT = 150
-IMG_WIDTH = 150
+EPOCHS = 5
+IMG_HEIGHT = 300
+IMG_WIDTH = 300
 CHECKPOINT_PATH = 'training_1/cp.ckpt'
 SAVE_PATH = 'saved_model/genders'
 
