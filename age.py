@@ -31,11 +31,11 @@ class Images:
 image_list = []
 
 for file in os.listdir(MDIR):
-    temp = Images("male", process_files(file), file)
+    temp = Images("male", process_files(file), MDIR + file)
     image_list.append(temp)
 
 for file in os.listdir(FDIR):
-    temp = Images("female", process_files(file), file)
+    temp = Images("female", process_files(file), FDIR + file)
     image_list.append(temp)
 
 
