@@ -33,8 +33,8 @@ def draw_faces(cropped_faces):
     pyplot.show()
 
 
-filename = 'test1.jpg'
-# detect faces in the image
-faces = crop_faces(filename)
-# display faces on the original image
-draw_faces(faces)
+# filename = 'test1.jpg'
+# # detect faces in the image
+# faces = crop_faces(filename)
+# # display faces on the original image
+# draw_faces(faces)
