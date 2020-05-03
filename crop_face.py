@@ -8,12 +8,12 @@ import sys
 from PIL import Image
 import numpy as np
 
-PATH = sys.argv[1]
+# PATH = sys.argv[1]
 
 
-if not os.path.exists(PATH):
-    print("Niepoprawna ścieżka! Spróbuj ponownie")
-    exit(0)
+# if not os.path.exists(PATH):
+#     print("Niepoprawna ścieżka! Spróbuj ponownie")
+#     exit(0)
 
 
 def crop_faces(filename):
@@ -46,6 +46,6 @@ def draw_faces(cropped_faces):
 
 # filename = 'test1.jpg'
 # detect faces in the image
-faces = crop_faces(PATH)
+# faces = crop_faces(PATH)
 # display faces on the original image
-draw_faces(faces)
+# draw_faces(faces)

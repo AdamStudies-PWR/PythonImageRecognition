@@ -21,6 +21,9 @@ IMG_HEIGHT = 200
 IMG_WIDTH = 200
 CHECKPOINT_PATH = 'training_1/cp.ckpt'
 SAVE_PATH = 'saved_model/genders'
+# Muszę tak podawać ścieżke bo inaczej zapisuje mi w home xD
+# CHECKPOINT_PATH = '/home/adam/PWR/RIPO/PythonImageRecognition/training_1/cp.ckpt'
+# SAVE_PATH = '/home/adam/PWR/RIPO/PythonImageRecognition/saved_model/genders'
 
 
 def load_data_from_path(path=sys.argv[1], batch_size=128, target_size=(200, 200)):
