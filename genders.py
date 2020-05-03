@@ -8,6 +8,7 @@ from tensorflow.keras.preprocessing import image
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
 import os
+import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 import sys
@@ -16,10 +17,10 @@ PATH = sys.argv[1]
 
 BATCH_SIZE = 128
 EPOCHS = 15
-IMG_HEIGHT = 150
-IMG_WIDTH = 150
+IMG_HEIGHT = 200
+IMG_WIDTH = 200
 CHECKPOINT_PATH = 'training_1/cp.ckpt'
-SAVE_PATH = '/home/adam/RIPO/PythonImageRecognition/saved_model/genders'
+SAVE_PATH = 'saved_model/genders'
 
 
 def load_data_from_path(path=sys.argv[1], batch_size=128, target_size=(200, 200)):
@@ -123,7 +124,6 @@ def load_model_from_checkpoint(model, checkpoint_path, train_data_gen):
 
 def fit_model_from_path(path_data=PATH, epochs=EPOCHS,
                         batch_size=BATCH_SIZE, save_path=SAVE_PATH, checkpoint_path=CHECKPOINT_PATH, target_size=(IMG_HEIGHT, IMG_WIDTH)):
-
     train_data_gen, val_data_gen, total_train, total_val = load_data_from_path(
         path_data, batch_size, target_size)
 
@@ -154,14 +154,14 @@ def fit_model_from_path(path_data=PATH, epochs=EPOCHS,
     return history
 
 
-def read_history(history):
+def read_history(history, epochs=EPOCHS):
     acc = history.history['accuracy']
     val_acc = history.history['val_accuracy']
 
     loss = history.history['loss']
     val_loss = history.history['val_loss']
 
-    epochs_range = range(EPOCHS)
+    epochs_range = range(epochs)
 
     plt.figure(figsize=(8, 8))
     plt.subplot(1, 2, 1)
@@ -193,8 +193,19 @@ def use_model(path_image, path_model=SAVE_PATH):
     test_image = np.expand_dims(test_image, axis=0)
 
     model = load_model(path_model)
-    # probability_model = tf.keras.Sequential([model, tf.keras.layers.Softmax()])
-
-    # prediction = probability_model.predict(test_image)
     prediction = model.predict(test_image)
     return prediction
+
+
+def use_model_images(images, path_model=SAVE_PATH):
+
+    image_generator = tf.keras.preprocessing.image.ImageDataGenerator(
+        rescale=1./255)
+    model = load_model(path_model)
+    predictions = []
+    for i in range(len(images)):
+        images[i]
+        img = image.img_to_array(images[i])
+        img = np.expand_dims(images[i], axis=0)
+        predictions.append(model.predict(img))
+    return predictions
