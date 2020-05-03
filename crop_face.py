@@ -3,11 +3,22 @@ from matplotlib import pyplot
 from matplotlib.patches import Rectangle
 from matplotlib.patches import Circle
 from mtcnn.mtcnn import MTCNN
+import os
+import sys
+from PIL import Image
+import numpy as np
+
+PATH = sys.argv[1]
+
+
+if not os.path.exists(PATH):
+    print("Niepoprawna ścieżka! Spróbuj ponownie")
+    exit(0)
 
 
 def crop_faces(filename):
     # load image from file
-    data = pyplot.imread(filename)
+    data = np.asarray(Image.open(filename))  # pyplot.imread(filename)
     # create the detector, using default weights
     detector = MTCNN()
     # detect faces in the image
@@ -34,7 +45,7 @@ def draw_faces(cropped_faces):
 
 
 # filename = 'test1.jpg'
-# # detect faces in the image
-# faces = crop_faces(filename)
-# # display faces on the original image
-# draw_faces(faces)
+# detect faces in the image
+faces = crop_faces(PATH)
+# display faces on the original image
+draw_faces(faces)
