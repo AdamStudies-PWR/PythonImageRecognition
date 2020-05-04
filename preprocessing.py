@@ -56,49 +56,49 @@ if ch == "1":
     if not os.path.exists(PATH + "/train/male2"):
         os.mkdir(PATH + "/train/male2")
     just_crop(PATH + "/train/male", PATH + "/train/male2")
-    sh.rmtree(PATH + "/train/male")
+    sh.rmtree((PATH + "/train/male"))
     os.replace(PATH + "/train/male2", PATH + "/train/male")
     
     if not os.path.exists(PATH + "/train/female2"):
         os.mkdir(PATH + "/train/female2")
     just_crop(PATH + "/train/female", PATH + "/train/female2")
-    sh.rmtree(PATH + "/train/female")
-    os.replace(PATH + "/train/female2", PATH + "/fetrain/male")
+    sh.rmtree((PATH + "/train/female"))
+    os.replace(PATH + "/train/female2", PATH + "/train/female")
 
     if not os.path.exists(PATH + "/validation/male2"):
         os.mkdir(PATH + "/validation/male2")
     just_crop(PATH + "/validation/male", PATH + "/validation/male2")
-    sh.rmtree(PATH + "/validation/male")
+    sh.rmtree((PATH + "/validation/male"))
     os.replace(PATH + "/validation/male2", PATH + "/validation/male")
 
     if not os.path.exists(PATH + "/validation/female2"):
         os.mkdir(PATH + "/validation/female2")
     just_crop(PATH + "/validation/female", PATH + "/validation/female2")
-    sh.rmtree(PATH + "/validation/female")
-    os.replace(PATH + "/validation/female2", PATH + "/fevalidation/male")
+    sh.rmtree((PATH + "/validation/female"))
+    os.replace(PATH + "/validation/female2", PATH + "/validation/female")
 elif ch == "2":
     if not os.path.exists(PATH + "/train/male2"):
         os.mkdir(PATH + "/train/male2")
     double_data(PATH + "/train/male", PATH + "/train/male2")
-    sh.rmtree(PATH + "/train/male")
+    sh.rmtree((PATH + "/train/male"))
     os.replace(PATH + "/train/male2", PATH + "/train/male")
 
     if not os.path.exists(PATH + "/train/female2"):
         os.mkdir(PATH + "/train/female2")
     double_data(PATH + "/train/female", PATH + "/train/female2")
-    sh.rmtree(PATH + "/train/female")
-    os.replace(PATH + "/train/female2", PATH + "/fetrain/male")
+    sh.rmtree((PATH + "/train/female"))
+    os.replace(PATH + "/train/female2", PATH + "/train/female")
 
     if not os.path.exists(PATH + "/validation/male2"):
         os.mkdir(PATH + "/validation/male2")
     double_data(PATH + "/validation/male", PATH + "/validation/male2")
-    sh.rmtree(PATH + "/validation/male")
+    sh.rmtree((PATH + "/validation/male"))
     os.replace(PATH + "/validation/male2", PATH + "/validation/male")
 
     if not os.path.exists(PATH + "/validation/female2"):
         os.mkdir(PATH + "/validation/female2")
     double_data(PATH + "/validation/female", PATH + "/validation/female2")
-    sh.rmtree(PATH + "/validation/female")
-    os.replace(PATH + "/validation/female2", PATH + "/fevalidation/male")
+    sh.rmtree((PATH + "/validation/female"))
+    os.replace(PATH + "/validation/female2", PATH + "/validation/female")
 
 
