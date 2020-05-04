@@ -28,6 +28,7 @@ def crop_faces(filename):
             cropped_faces.append(data[y1:y2, x1:x2])
     except:
         print("Błąd! Plik: ", filename)
+
     return cropped_faces
 
 # draw each face separately

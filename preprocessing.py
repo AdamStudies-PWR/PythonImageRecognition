@@ -1,10 +1,9 @@
 import os
 import sys
 import cv2 as cv
-import numpy as np
+import tensorflow as tf
 
 from crop_face import crop_faces
-
 
 def double_data(directory, temp_path):
     iter = 0
@@ -19,6 +18,7 @@ def double_data(directory, temp_path):
                 iter = iter + 1
             except:
                 print("Błąd openCV!")
+        tf.keras.backend.clear_session()
         os.replace(directory + "/" + filename, temp_path + "/" + str(iter) + temp)
         iter = iter + 1
 
@@ -36,7 +36,7 @@ def just_crop(directory, temp_path):
                 iter = iter + 1
             except:
                 print("Błąd openCV!")
-
+        tf.keras.backend.clear_session()
 
 if len(sys.argv) != 2:
     print("Niepoprawnia ilość argumentów!")
