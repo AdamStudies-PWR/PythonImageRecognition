@@ -3,6 +3,7 @@ from matplotlib import pyplot
 from mtcnn.mtcnn import MTCNN
 from PIL import Image
 import numpy as np
+import cv2 as cv
 
 # PATH = sys.argv[1]
 
@@ -37,6 +38,7 @@ def locate_faces(data):
     detector = MTCNN()
     # detect faces in the image
     locations = []
+    cropped_faces = []
     try:
         faces = detector.detect_faces(data)
         for i in range(len(faces)):
@@ -44,10 +46,13 @@ def locate_faces(data):
             x1, y1, width, height = faces[i]['box']
             box = [x1, y1, width, height]
             locations.append(box)
+            x2, y2 = x1 + width, y1 + height
+            cropped_faces.append(data[y1:y2, x1:x2])
+            cv.resize(cropped_faces[i], dsize=(200, 200), interpolation=cv.INTER_CUBIC)
     except:
         print("Błąd! - Uszkodzone dane z kamery?")
 
-    return locations
+    return locations, cropped_faces
 
 # draw each face separately
 

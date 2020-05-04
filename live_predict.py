@@ -2,6 +2,7 @@ import cv2 as cv
 import tensorflow as tf
 
 from crop_face import locate_faces
+from genders import use_model_images
 
 cv.namedWindow("Gender and Age detection system PRO")
 
@@ -13,8 +14,10 @@ if capture.isOpened():
 counter = 0
 while active:
     if counter == 0:
-        faces = locate_faces(frame)
-    for box in faces:
+        cords, faces = locate_faces(frame)
+        # predictions = use_model_images(faces)
+        tf.keras.backend.clear_session()
+    for box in cords:
         cv.rectangle(frame, (box[0], box[1]), (box[0] + box[2], box[1] + box[3]), (0, 0, 255),  4)
     cv.imshow("Gender and Age detection system PRO", frame)
     key = cv.waitKey(10)
