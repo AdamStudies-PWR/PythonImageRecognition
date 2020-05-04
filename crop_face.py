@@ -31,6 +31,24 @@ def crop_faces(filename):
 
     return cropped_faces
 
+# find face for live detection
+def locate_faces(data):
+    # create the detector, using default weights
+    detector = MTCNN()
+    # detect faces in the image
+    locations = []
+    try:
+        faces = detector.detect_faces(data)
+        for i in range(len(faces)):
+            # get coordinates
+            x1, y1, width, height = faces[i]['box']
+            box = [x1, y1, width, height]
+            locations.append(box)
+    except:
+        print("Błąd! - Uszkodzone dane z kamery?")
+
+    return locations
+
 # draw each face separately
 
 
