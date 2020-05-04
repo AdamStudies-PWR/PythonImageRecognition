@@ -1,10 +1,6 @@
 # extract and plot each detected face in a photograph
 from matplotlib import pyplot
-from matplotlib.patches import Rectangle
-from matplotlib.patches import Circle
 from mtcnn.mtcnn import MTCNN
-import os
-import sys
 from PIL import Image
 import numpy as np
 
@@ -22,13 +18,16 @@ def crop_faces(filename):
     # create the detector, using default weights
     detector = MTCNN()
     # detect faces in the image
-    faces = detector.detect_faces(data)
     cropped_faces = []
-    for i in range(len(faces)):
-        # get coordinates
-        x1, y1, width, height = faces[i]['box']
-        x2, y2 = x1 + width, y1 + height
-        cropped_faces.append(data[y1:y2, x1:x2])
+    try:
+        faces = detector.detect_faces(data)
+        for i in range(len(faces)):
+            # get coordinates
+            x1, y1, width, height = faces[i]['box']
+            x2, y2 = x1 + width, y1 + height
+            cropped_faces.append(data[y1:y2, x1:x2])
+    except:
+        print("Błąd! Plik: ", filename)
     return cropped_faces
 
 # draw each face separately

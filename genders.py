@@ -7,6 +7,7 @@ from tensorflow.keras.layers import Dense, Conv2D, Flatten, Dropout, MaxPooling2
 from tensorflow.keras.preprocessing import image
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
+
 import os
 import cv2
 import numpy as np
@@ -75,6 +76,7 @@ def load_data_from_path(path=sys.argv[1], batch_size=128, target_size=(200, 200)
                                                                   directory=validation_dir,
                                                                   target_size=target_size,
                                                                   class_mode='binary')
+
     return train_data_gen, val_data_gen, total_train, total_val
 
 
