@@ -11,12 +11,15 @@ import numpy as np
 #     print("Niepoprawna ścieżka! Spróbuj ponownie")
 #     exit(0)
 
+def init_detector():
+    return MTCNN()
 
-def crop_faces(filename):
+
+def crop_faces(filename, detector=MTCNN()):
     # load image from file
     data = np.asarray(Image.open(filename))  # pyplot.imread(filename)
     # create the detector, using default weights
-    detector = MTCNN()
+    # detector = MTCNN()
     # detect faces in the image
     cropped_faces = []
     try:
@@ -32,9 +35,11 @@ def crop_faces(filename):
     return cropped_faces
 
 # find face for live detection
-def locate_faces(data):
+
+
+def locate_faces(data, detector=MTCNN()):
     # create the detector, using default weights
-    detector = MTCNN()
+    # detector = MTCNN()
     # detect faces in the image
     locations = []
     cropped_faces = []

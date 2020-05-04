@@ -20,11 +20,11 @@ BATCH_SIZE = 128
 EPOCHS = 15
 IMG_HEIGHT = 200
 IMG_WIDTH = 200
-#CHECKPOINT_PATH = 'training_1/cp.ckpt'
-#SAVE_PATH = 'saved_model/genders'
+CHECKPOINT_PATH = 'training_1/cp.ckpt'
+SAVE_PATH = 'saved_model/genders'
 # Muszę tak podawać ścieżke bo inaczej zapisuje mi w home xD
-CHECKPOINT_PATH = '/home/adam/RIPO/PythonImageRecognition/training_1/cp.ckpt'
-SAVE_PATH = '/home/adam/RIPO/PythonImageRecognition/saved_model/genders'
+# CHECKPOINT_PATH = '/home/adam/RIPO/PythonImageRecognition/training_1/cp.ckpt'
+# SAVE_PATH = '/home/adam/RIPO/PythonImageRecognition/saved_model/genders'
 
 
 def load_data_from_path(path=sys.argv[1], batch_size=128, target_size=(200, 200)):
@@ -202,11 +202,11 @@ def use_model(path_image, path_model=SAVE_PATH):
     return prediction
 
 
-def use_model_images(images, path_model=SAVE_PATH):
+def init_model(path_model=SAVE_PATH):
+    return (tf.keras.preprocessing.image.ImageDataGenerator(rescale=1./255), load_model(path_model))
 
-    image_generator = tf.keras.preprocessing.image.ImageDataGenerator(
-        rescale=1./255)
-    model = load_model(path_model)
+
+def use_model_images(images, path_model=SAVE_PATH, image_generator=tf.keras.preprocessing.image.ImageDataGenerator(rescale=1./255), model=load_model(SAVE_PATH)):
     predictions = []
     for i in range(len(images)):
         images[i]
