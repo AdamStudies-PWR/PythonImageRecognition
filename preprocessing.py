@@ -11,14 +11,15 @@ def double_data(directory, temp_path):
     for filename in os.listdir(directory):
         faces = crop_faces(directory + "/" + filename)
         temp = "g" + filename.split("g")[1] + "g"
-        for face in faces:
-            try:
-                # cv.imshow(filename, face)
-                face = cv.resize(face, dsize=(200, 200), interpolation=cv.INTER_CUBIC)
-                cv.imwrite((temp_path + "/" + str(iter) + temp), cv.cvtColor(face, cv.COLOR_RGB2BGR))
-                iter = iter + 1
-            except:
-                print("Błąd openCV!")
+        if len(faces) == 1:
+            for face in faces:
+                try:
+                    # cv.imshow(filename, face)
+                    face = cv.resize(face, dsize=(200, 200), interpolation=cv.INTER_CUBIC)
+                    cv.imwrite((temp_path + "/" + str(iter) + temp), cv.cvtColor(face, cv.COLOR_RGB2BGR))
+                    iter = iter + 1
+                except:
+                    print("Błąd openCV!")
         tf.keras.backend.clear_session()
         os.replace(directory + "/" + filename, temp_path + "/" + str(iter) + temp)
         iter = iter + 1
@@ -29,14 +30,15 @@ def just_crop(directory, temp_path):
     for filename in os.listdir(directory):
         faces = crop_faces(directory + "/" + filename)
         temp = "g" + filename.split("g")[1] + "g"
-        for face in faces:
-            try:
-                # cv.imshow(filename, face)
-                face = cv.resize(face, dsize=(200, 200), interpolation=cv.INTER_CUBIC)
-                cv.imwrite((temp_path + "/" + str(iter) + temp), cv.cvtColor(face, cv.COLOR_RGB2BGR))
-                iter = iter + 1
-            except:
-                print("Błąd openCV!")
+        if len(faces) == 1:
+            for face in faces:
+                try:
+                    # cv.imshow(filename, face)
+                    face = cv.resize(face, dsize=(200, 200), interpolation=cv.INTER_CUBIC)
+                    cv.imwrite((temp_path + "/" + str(iter) + temp), cv.cvtColor(face, cv.COLOR_RGB2BGR))
+                    iter = iter + 1
+                except:
+                    print("Błąd openCV!")
         tf.keras.backend.clear_session()
 
 if len(sys.argv) != 2:
