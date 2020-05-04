@@ -12,10 +12,13 @@ def double_data(directory, temp_path):
         faces = crop_faces(directory + "/" + filename)
         temp = "g" + filename.split("g")[1] + "g"
         for face in faces:
-            # cv.imshow(filename, face)
-            face = cv.resize(face, dsize=(200, 200), interpolation=cv.INTER_CUBIC)
-            cv.imwrite((temp_path + "/" + str(iter) + temp), cv.cvtColor(face, cv.COLOR_RGB2BGR))
-            iter = iter + 1
+            try:
+                # cv.imshow(filename, face)
+                face = cv.resize(face, dsize=(200, 200), interpolation=cv.INTER_CUBIC)
+                cv.imwrite((temp_path + "/" + str(iter) + temp), cv.cvtColor(face, cv.COLOR_RGB2BGR))
+                iter = iter + 1
+            except:
+                print("Błąd openCV!")
         os.replace(directory + "/" + filename, temp_path + "/" + str(iter) + temp)
         iter = iter + 1
 
@@ -26,10 +29,13 @@ def just_crop(directory, temp_path):
         faces = crop_faces(directory + "/" + filename)
         temp = "g" + filename.split("g")[1] + "g"
         for face in faces:
-            # cv.imshow(filename, face)
-            face = cv.resize(face, dsize=(200, 200), interpolation=cv.INTER_CUBIC)
-            cv.imwrite((temp_path + "/" + str(iter) + temp), cv.cvtColor(face, cv.COLOR_RGB2BGR))
-            iter = iter + 1
+            try:
+                # cv.imshow(filename, face)
+                face = cv.resize(face, dsize=(200, 200), interpolation=cv.INTER_CUBIC)
+                cv.imwrite((temp_path + "/" + str(iter) + temp), cv.cvtColor(face, cv.COLOR_RGB2BGR))
+                iter = iter + 1
+            except:
+                print("Błąd openCV!")
 
 
 if len(sys.argv) != 2:
