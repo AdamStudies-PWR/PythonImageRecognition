@@ -1,5 +1,6 @@
 import cv2 as cv
 import tensorflow as tf
+import sys
 
 from crop_face import locate_faces, init_detector
 from genders import use_model_images, init_model
@@ -8,13 +9,17 @@ cv.namedWindow("Gender and Age detection system PRO")
 
 OUTPUT = ["Chłopczyk", "Dziewczynka"]
 
-detector = init_detector()
+PATH = sys.argv[1]
 
 capture = cv.VideoCapture(0)
 
+detector = init_detector()
+
 if capture.isOpened():
     active, frame = capture.read()
-(image_generator, model) = init_model()
+
+(image_generator, model) = init_model(PATH)
+
 counter = 0
 while active:
     if counter == 0:

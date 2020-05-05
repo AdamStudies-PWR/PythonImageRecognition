@@ -1,8 +1,9 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import tensorflow as tf
-
+import tensorflow.keras.backend as K
 from tensorflow.keras.models import Sequential
+from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.layers import Dense, Conv2D, Flatten, Dropout, MaxPooling2D
 from tensorflow.keras.preprocessing import image
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
@@ -17,7 +18,7 @@ import sys
 PATH = sys.argv[1]
 
 BATCH_SIZE = 128
-EPOCHS = 15
+EPOCHS = 6
 IMG_HEIGHT = 200
 IMG_WIDTH = 200
 CHECKPOINT_PATH = 'training_1/cp.ckpt'
@@ -96,23 +97,30 @@ def plotImages(images_arr):
 def create_model(target_size=(200, 200)):
     h, w = target_size
     model = Sequential([
-        Conv2D(16, 3, padding='same', activation='relu',
+        Conv2D(32,  3, padding='same', activation='relu',
                input_shape=(h, w, 3)),
-        MaxPooling2D(),
         Conv2D(32, 3, padding='same', activation='relu'),
         MaxPooling2D(),
-        Conv2D(64, 3, padding='same', activation='relu'),
+        Conv2D(16, 3, padding='valid', activation='relu'),
+        MaxPooling2D(),
+        Conv2D(32, 3, padding='valid', activation='relu'),
+        MaxPooling2D(),
+        Conv2D(64, 3, padding='valid', activation='relu'),
         MaxPooling2D(),
         Flatten(),
-        Dense(512, activation='relu'),
+        Dense(128, activation='relu'),
+        Dropout(0.25),
         Dense(1)
     ])
 
-    model.compile(optimizer='adam',
+    model.compile(optimizer=Adam(lr=0.0005),
                   loss=tf.keras.losses.BinaryCrossentropy(from_logits=True),
                   metrics=['accuracy'])
 
     model.summary()
+
+    print("learning rate: " + str(K.eval(model.optimizer.lr)))
+
     return model
 
 
