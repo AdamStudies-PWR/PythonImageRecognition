@@ -2,6 +2,7 @@ import pandas as pd
 import tensorflow as tf
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Activation, Conv2D, Flatten, Dropout, MaxPooling2D, ZeroPadding2D
+from tensorflow.keras.optimizers import Adam
 from keras.preprocessing import image
 from keras import Model
 from sklearn.model_selection import train_test_split
@@ -130,10 +131,9 @@ base_model_output = Activation('softmax')(base_model_output)
 
 age_model = tf.keras.Model(inputs=model.input, outputs=base_model_output)
 
-age_model.compile(loss='categorical_crossentropy', optimizer=keras.optimizers.Adam(), metrics=['accuracy'])
+age_model.compile(loss='categorical_crossentropy', optimizer=Adam, metrics=['accuracy'])
 
-checkpointer = tf.keras.callbacks.ModelCheckpoint(filepath=''
-                               , monitor="val_loss", verbose=1, save_best_only=True, mode='auto')
+checkpointer = tf.keras.callbacks.ModelCheckpoint(filepath='', monitor="val_loss", verbose=1, save_best_only=True, mode='auto')
 
 epochs = 250;
 batch_size = 256
