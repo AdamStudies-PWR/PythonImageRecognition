@@ -14,6 +14,7 @@ pillow
 
 # Age:
 pandas
+sklearn
 
 # Face crop:
 mtcnn

@@ -8,20 +8,21 @@ from keras import Model
 from sklearn.model_selection import train_test_split
 from keras.preprocessing.image import ImageDataGenerator
 import numpy as np
+import matplotlib.pyplot as plt
 import keras
 import os
 
 
 # MALES
-MDIR = "/media/adam/DLinux/ripo/Croped/train/male/"
+MDIR = "data/train/male/"
 # FEMALES
-FDIR = "/media/adam/DLinux/ripo/Croped/train/female/"
+FDIR = "data/train/female/"
+EPOCHS = 3
+# PRE DONE WEIGHTS
+PWEIGHTS = "vgg_face_weights.h5"
 
-#PRE DONE WEIGHTS
-PWEIGHTS = "/home/adam/PWR/RIPO/PythonImageRecognition/vgg_face_weights.h5"
-
-#SAVEPOINTS
-CHKPOINT = "/home/adam/PWR/RIPO/PythonImageRecognition/agecheck/age_model.hdf5"
+# SAVEPOINTS
+CHKPOINT = "agecheck/age_model.hdf5"
 
 # DATA
 target_size = (224, 224)
@@ -56,7 +57,8 @@ for filename in os.listdir(MDIR):
 #         full_path.append(FDIR + filename)
 
 instances = len(age)
-data = pd.DataFrame({'age': age, 'full_path': full_path}, index = range(0, instances))
+data = pd.DataFrame({'age': age, 'full_path': full_path},
+                    index=range(0, instances))
 data['pixels'] = data['full_path'].apply(getImagePixels)
 
 
@@ -68,9 +70,11 @@ for i in range(0, instances):
     features.append(data['pixels'].values[i])
 features = np.array(features)
 print("TEST1")
-features = features.reshape(features.shape[0], 224, 224, 3) #Nie rozumiem co tu jest nie tak
+# Nie rozumiem co tu jest nie tak
+features = features.reshape(features.shape[0], 224, 224, 3)
 
-train_x, test_x, train_y, test_y = train_test_split(features, target_classes, test_size=0.30)
+train_x, test_x, train_y, test_y = train_test_split(
+    features, target_classes, test_size=0.30)
 print("TEST2")
 model = Sequential()
 model.add(ZeroPadding2D((1, 1), input_shape=(224, 224, 3)))
@@ -124,24 +128,53 @@ for layer in model.layers[:-7]:
 
 
 base_model_output = Sequential()
-base_model_output = Conv2D(101, (1, 1), name='predictions')(model.layers[-4].output)
+base_model_output = Conv2D(101, (1, 1), name='predictions')(
+    model.layers[-4].output)
 base_model_output = Flatten()(base_model_output)
 base_model_output = Activation('softmax')(base_model_output)
 
 age_model = tf.keras.Model(inputs=model.input, outputs=base_model_output)
 
-age_model.compile(loss='categorical_crossentropy', optimizer=Adam(), metrics=['accuracy'])
+age_model.compile(loss='categorical_crossentropy',
+                  optimizer=Adam(), metrics=['accuracy'])
 
-checkpointer = tf.keras.callbacks.ModelCheckpoint(filepath=CHKPOINT, monitor="val_loss", verbose=1, save_best_only=True, mode='auto')
+checkpointer = tf.keras.callbacks.ModelCheckpoint(
+    filepath=CHKPOINT, monitor="val_loss", verbose=1, save_best_only=True, mode='auto')
 
 epochs = 250
-batch_size = 256
+batch_size = 8
 
 for i in range(epochs):
     print("epoch ", i)
 
-ix_train = np.random.choice(train_x.shape[0], size=batch_size)
+ix_train = np.random.choice(train_x.shape[0], size=256)
 
-score = age_model.fit(train_x[ix_train], train_y[ix_train]
-                      , epochs=1, validation_data=(test_x, test_y), callbacks=[checkpointer])
+history = age_model.fit(train_x[ix_train], train_y[ix_train], epochs=EPOCHS, batch_size=batch_size, validation_data=(
+    test_x, test_y), callbacks=[checkpointer])
 
+
+def read_history(history, epochs=EPOCHS):
+    acc = history.history['accuracy']
+    val_acc = history.history['val_accuracy']
+
+    loss = history.history['loss']
+    val_loss = history.history['val_loss']
+
+    epochs_range = range(epochs)
+
+    plt.figure(figsize=(8, 8))
+    plt.subplot(1, 2, 1)
+    plt.plot(epochs_range, acc, label='Training Accuracy')
+    plt.plot(epochs_range, val_acc, label='Validation Accuracy')
+    plt.legend(loc='lower right')
+    plt.title('Training and Validation Accuracy')
+
+    plt.subplot(1, 2, 2)
+    plt.plot(epochs_range, loss, label='Training Loss')
+    plt.plot(epochs_range, val_loss, label='Validation Loss')
+    plt.legend(loc='upper right')
+    plt.title('Training and Validation Loss')
+    plt.show()
+
+
+read_history(history)
