@@ -12,6 +12,9 @@ numpy
 matplotlib
 pillow
 
+# Age:
+pandas
+
 # Face crop:
 mtcnn
 
