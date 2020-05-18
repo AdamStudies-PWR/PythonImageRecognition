@@ -66,13 +66,12 @@ target_classes = keras.utils.to_categorical(target, classes)
 features = []
 for i in range(0, instances):
     features.append(data['pixels'].values[i])
-print("Crash Test2!")
-#features = np.array(features)
-print("Crash Test3!")
-#features = features.reshape(features.shape[0], 224, 224, 3)
+features = np.array(features)
+print("TEST1")
+features = features.reshape(features.shape[0], 224, 224, 3) #Nie rozumiem co tu jest nie tak
 
 train_x, test_x, train_y, test_y = train_test_split(features, target_classes, test_size=0.30)
-
+print("TEST2")
 model = Sequential()
 model.add(ZeroPadding2D((1, 1), input_shape=(224, 224, 3)))
 model.add(Conv2D(64, (3, 3), activation='relu'))
@@ -131,11 +130,11 @@ base_model_output = Activation('softmax')(base_model_output)
 
 age_model = tf.keras.Model(inputs=model.input, outputs=base_model_output)
 
-age_model.compile(loss='categorical_crossentropy', optimizer=Adam, metrics=['accuracy'])
+age_model.compile(loss='categorical_crossentropy', optimizer=Adam(), metrics=['accuracy'])
 
-checkpointer = tf.keras.callbacks.ModelCheckpoint(filepath='', monitor="val_loss", verbose=1, save_best_only=True, mode='auto')
+checkpointer = tf.keras.callbacks.ModelCheckpoint(filepath=CHKPOINT, monitor="val_loss", verbose=1, save_best_only=True, mode='auto')
 
-epochs = 250;
+epochs = 250
 batch_size = 256
 
 for i in range(epochs):
