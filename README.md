@@ -13,4 +13,4 @@ Wykorzystaliśmy bazę danych IMDb zawierająco opisane zdjęcia aktórów (wiek
 
 ## Rezultaty
 
-Udało sie zrealizować rozpoznawanie płci, niestety jednak rozpoznawanie wieku nie działa poprawnie - model [wieku](https://github.com/AdamStudies-PWR/PythonImageRecognition/tree/age_recognition) tworzy się porawnie ale nie udało nam się go zapisać w.
+Udało sie zrealizować rozpoznawanie płci, niestety jednak rozpoznawanie wieku nie działa poprawnie - model [wieku](https://github.com/AdamStudies-PWR/PythonImageRecognition/tree/age_recognition) tworzy się poprawnie ale nie udało nam się go zapisać do późniejszego wyokrzystania.
